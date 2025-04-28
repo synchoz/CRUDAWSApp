@@ -2,6 +2,16 @@
 
 i ran this project in visual studio code and mostly with SAM CLI + AWS configure in CLI which felt more natural for me as it was something familiar for me from some of my projects i did in nodeJS where i had to run some commands from the CLI but it also tought me a little about dockerizing since i had to mock the AWS environment locally for lambda functions + dynamoDB
 
+## 📚 API Endpoints Summary
+
+| Method | Path          | Description                  | Query Parameters | Body Fields (JSON)                                      |
+|--------|---------------|-------------------------------|------------------|---------------------------------------------------------|
+| GET    | /movies        | Get movies by title           | `title` (string)  | None                                                    |
+| POST   | /movies        | Add a new movie               | None              | `title`, `description`, `releaseDate`, `durationX`      |
+| DELETE | /movies        | Delete movies by title        | `title` (string)  | None                                                    |
+| PUT    | /movies        | Update movie fields by title  | `title` (string)  | `description`, `releaseDate`, `durationX` (optional)    |
+
+
 # CRUDAWSSamApp
 
 This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
