@@ -1,16 +1,17 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
+Description: |
   CRUDAWSSamApp
-
   Sample SAM Template for CRUDAWSSamApp
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
-
+    Timeout: 5
 Resources:
+  MoviesApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors: "'*'"
   MoviesTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -27,39 +28,36 @@ Resources:
       Environment:
         Variables:
           MOVIES_TABLE: !Ref MoviesTable
-      Handler: app.lambda_handler
-      Runtime: python3.11
-      Architectures:
-        - x86_64
       Events:
         MoviesGet:
           Type: Api
           Properties:
             Path: /movies
             Method: get
+            RestApiId: !Ref MoviesApi
         MoviesPost:
           Type: Api
           Properties:
             Path: /movies
             Method: post
+            RestApiId: !Ref MoviesApi
         MoviesDelete:
           Type: Api
           Properties:
             Path: /movies
             Method: delete
+            RestApiId: !Ref MoviesApi
         MoviesUpdate:
           Type: Api
           Properties:
             Path: /movies
             Method: put
-
+            RestApiId: !Ref MoviesApi
+      Handler: app.lambda_handler
+      Runtime: python3.11
+      Architectures:
+        - x86_64
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  #HelloWorldApi:
-    #Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    #Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  #MoviesApi:
-    #Description: "API Gateway URL for Movies Function"
-    #Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
+  MoviesApiUrl:
+    Description: API Gateway endpoint for Movies
+    Value: !Sub https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies

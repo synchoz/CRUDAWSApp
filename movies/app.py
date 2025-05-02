@@ -10,12 +10,13 @@ def findMoviesByTitle(title):
     )
     return response.get("Items", [])
 
-dynamodb = boto3.resource('dynamodb', endpoint_url='http://host.docker.internal:8000')
+dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['MOVIES_TABLE'])
 
 def lambda_handler(event, context):
     if event['httpMethod'] == "GET":
-        items = findMoviesByTitle(event['queryStringParameters']['title'])
+        title = event['queryStringParameters']['title']
+        items = findMoviesByTitle(title)
 
         if not items:
             return { "statusCode": 404, 'body': f"No movie was found with title: {title}" }
